@@ -64,4 +64,5 @@ function timeDelayAllowed() public view returns (uint256);
 ## Whats next ?
 
 - Multiple ENS ownership.
-- Onchain SignedOracle lib.
+- Onchain SignedOracle lib
+- Allow data type to be changed ?
