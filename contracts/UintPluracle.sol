@@ -17,16 +17,19 @@ contract UintPluracle is Ownable {
   uint256 public _data;
   uint256 public _reward;
   uint256 public _lastTimestamp;
+  uint256 public _maximumUpdateFrequency;
+  uint256 public _pluracleDataType;
 
   function UintPluracle(
-    uint256 reward, string dataType
+    uint256 reward
   ) payable {
     _reward = reward;
+    _pluracleDataType = "uint256";
   }
 
   function update(bytes32 data, uint256 dataTimestamp, bytes signature) public {
     // Check that time has passed since last update
-    require(now > _lastTimestamp);
+    require((now - _lastTimestamp) > _maximumUpdateFrequency );
 
     // Get all prices
     uint256 totalPrice;
@@ -51,11 +54,16 @@ contract UintPluracle is Ownable {
   }
 
   function addOracle(address newOracle) onlyOwner {
+    require(newOracle.dataType == _pluracleDataType)
     oracles.push(ISignedOracle(newOracle));
   }
 
   function removeOracle(uint256 oracleIndex) onlyOwner {
     delete oracles[oracleIndex];
+  }
+
+  function setMaximumUpdateFrequency(uint256 newMaximumUpdateFrequency) onlyOwner {
+    _maximumUpdateFrequency = newUpdateFrequency
   }
 
   function dataType() public view returns (string) {
