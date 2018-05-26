@@ -69,15 +69,12 @@ class Ticker extends Component {
 
   render() {
     return (
-      <div className="Ticker">
-
-        <main className="container">
-          <div className="">
-            <div className="">
-              <p>the data returned is: {this.state.data}</p>
-            </div>
+      <div className="displayComponent">
+        <div className="ticker-wrap">
+          <div className="ticker">
+            <div className="ticker__item">the data returned is:</div>
           </div>
-        </main>
+        </div>
       </div>
     );
   }
