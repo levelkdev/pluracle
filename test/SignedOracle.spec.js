@@ -14,13 +14,13 @@ contract( 'SignedOracle', function (accounts) {
   const TIME_DELAY_ALLOWED = '3600' // 1 hour
   const DATA_TYPE = 'uint';
 
-  const DATA = web3.utils.toHex(120);
+  const DATA = web3.utils.numberToHex(120);
   const TIMESTAMP = Math.floor(Date.now() / 1000);
 
   beforeEach(async function () {
     signedOracle = await SignedOracle.new(REWARD, TIME_DELAY_ALLOWED, DATA_TYPE,
     {from: owner, value: web3.utils.toWei('3')});
-    const message = await web3.utils.soliditySha3(DATA, TIMESTAMP);
+    const message = await web3.utils.soliditySha3({type: 'bytes32', value: DATA}, {type: 'uint256', value: TIMESTAMP});
     signature = await web3.eth.sign(message, owner);
   });
 
@@ -29,7 +29,7 @@ contract( 'SignedOracle', function (accounts) {
     try {
       const result = await signedOracle.update(DATA, BAD_TIMESTAMP, signature);
     } catch (e){
-      expect(await signedOracle._data()).to.eql('0x'); //default value
+      expect(await signedOracle._data()).to.eql('0x0000000000000000000000000000000000000000000000000000000000000000'); //default value
     }
   })
 
@@ -38,19 +38,19 @@ contract( 'SignedOracle', function (accounts) {
     try {
       const result = await signedOracle.update(BAD_DATA, TIMESTAMP, signature);
     } catch (e){
-      expect(await signedOracle._data()).to.eql('0x'); //default value
+      expect(await signedOracle._data()).to.eql('0x0000000000000000000000000000000000000000000000000000000000000000'); //default value
     }
   })
   it('Update with altered signature. Expect Throw', async () => {
     try {
       const result = await signedOracle.update(DATA, TIMESTAMP, signature);
     } catch (e){
-      expect(await signedOracle._data()).to.eql('0x'); //default value
+      expect(await signedOracle._data()).to.eql('0x0000000000000000000000000000000000000000000000000000000000000000'); //default value
     }
   })
   it('Update. Expect ok', async () => {
     const result = await signedOracle.update(DATA, TIMESTAMP, signature);
-    expect(await signedOracle._data()).to.eql(DATA);
+    expect(await signedOracle._data()).to.eql('0x7800000000000000000000000000000000000000000000000000000000000000');
   })
 
   it('Update. Expect throw for no funds', async () => {
@@ -66,7 +66,7 @@ contract( 'SignedOracle', function (accounts) {
     try {
       const result = await signedOracle.update(DATA, TIMESTAMP, signature);
     } catch (e){
-      expect(await signedOracle._data()).to.eql('0x'); //default value
+      expect(await signedOracle._data()).to.eql('0x0000000000000000000000000000000000000000000000000000000000000000'); //default value
     }
   })
 
