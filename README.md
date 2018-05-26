@@ -37,16 +37,31 @@ A oracles of oracles.
 How a signed oracle works
 1.- oracle.windingtree.eth creates a new oracle where they will be uploading LIF/USD price. 2.- oracle.winidngtree.eth send ETH to the lif oracle contract. 3.- Winding Tree provides a signed price, the msg signed is sha3(lifPrice, startTimestamp, endTimestamp) 4.- Pepito wants to win some ETH, he calls the lif oracle contract to update the price and get some reward for it. Doing: update(lifPrice, startTimestamp, endTimestamp). 5.- Pepito receives ETH and anyone can get on chain an updated trusted price of LifToken.
 
-SignedOracle Interface
-  address public constant ensRegistry = 0xAAAAA
-  string public valueType
-  string public ensOwner
-  uint256 public reward
-  uint256 public timeDelayAllowed
-  bytes public lastValue
-  SignedOracle(string _ensOwner, uint256 _reward, uint256 _timeDelayAllowed)
-  update(bytes value, uint256 startTimestamp, uint256 endTimestamp, bytes _signature) public
-  edit(uint256 _reward, uint256 _timeDelay) onlyOwner
-Whats next ?
-Multiple ENS ownership.
-Onchain SignedOracle lib.
+1.- oracle.windingtree.eth creates a new oracle where they will be uploading LIF/USD price.
+2.- oracle.winidngtree.eth send ETH to the lif oracle contract.
+3.- Winding Tree provides a signed price, the msg signed is `sha3(lifPrice, startTimestamp, endTimestamp)`
+4.- Pepito wants to win some ETH, he calls the lif oracle contract to update the price and get some reward for it. Doing: `update(lifPrice, startTimestamp, endTimestamp)`.
+5.- Pepito receives ETH and anyone can get on chain an updated trusted price of LifToken.
+
+## DataFeedOracle Interface
+
+```
+function getDataType() public view returns (string);
+function getLastTimestamp() public view returns (uint256);
+function getData() public view returns (bytes);
+```
+
+## SignedOracle Interface
+
+```
+function update(bytes value, uint256 startTimestamp, uint256 endTimestamp, bytes _signature) public;
+function edit(uint256 _reward, uint256 _timeDelay) onlyOwner;
+function getOwner() public view returns (address);
+function reward() public view returns (uint256);
+function timeDelayAllowed() public view returns (uint256);
+```
+
+## Whats next ?
+
+- Multiple ENS ownership.
+- Onchain SignedOracle lib.
