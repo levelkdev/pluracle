@@ -52,24 +52,24 @@ contract SignedOracle is Ownable {
     _timeDelayAllowed = timeDelayAllowed;
   }
 
-  function getDataType() public view returns (string) {
-    return (_dataType);
+  function dataType() public view returns (string) {
+    return _dataType;
   }
 
-  function getLastTimestamp() public view returns (uint256) {
-    return (_lastTimestamp);
+  function lastTimestamp() public view returns (uint256) {
+    return _lastTimestamp;
   }
 
-  function getData() public view returns (bytes) {
-    return (_data);
+  function data() public view returns (bytes) {
+    return _data;
   }
 
   function reward() public view returns (uint256) {
-    return (_reward);
+    return _reward;
   }
 
   function timeDelayAllowed() public view returns (uint256) {
-    return (_timeDelayAllowed);
+    return _timeDelayAllowed;
   }
 
 }
