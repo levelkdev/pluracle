@@ -18,6 +18,8 @@ contract SignedOracle is Ownable {
   uint256 public _lastTimestamp;
   string public _dataType;
 
+  event Updated(bytes32 newData);
+
   /// @dev Constructor
   /// @param reward bytes32 the wei reward per update
   /// @param timeDelayAllowed maximun amount of time that the data can be outdated
@@ -50,6 +52,8 @@ contract SignedOracle is Ownable {
     // Update the oracle data
     _data = data;
     _lastTimestamp = now;
+
+    Updated(_data);
 
     // Tranfer the update reward to the msg.sender
     msg.sender.transfer(_reward);
