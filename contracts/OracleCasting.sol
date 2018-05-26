@@ -8,7 +8,6 @@ import "zeppelin-solidity/contracts/math/SafeMath.sol";
  * @dev A library to cast generic values from IDataFeed oracles
  */
 library OracleCasting {
-  using SafeMath for uint256;
 
   function bytesToString(bytes32 data) public view returns(string) {
     bytes memory bytesString = new bytes(32);
