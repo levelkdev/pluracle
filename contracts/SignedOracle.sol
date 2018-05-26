@@ -38,13 +38,16 @@ contract SignedOracle is Ownable {
   /// @param signature the signature of the oracle owner
   function update(bytes32 data, uint256 dataTimestamp, bytes signature) public {
     // Check the dataTimestamp is not too old
-    require(now.sub(dataTimestamp) < _timeDelayAllowed);
+    require(now.sub(dataTimestamp) <= _timeDelayAllowed);
 
     // Generate message hash
     bytes32 messageSigned = keccak256(data, dataTimestamp);
+    bytes memory prefix = "\x19Ethereum Signed Message:\n32";
+    bytes32 messageSigned = sha3(data, dataTimestamp);
+    bytes32 prefixedHash = sha3(prefix, messageSigned);
 
     // Recover signer from the signature with messageSigned
-    address signer = ECRecovery.recover(messageSigned, signature);
+    address signer = ECRecovery.recover(prefixedHash, signature);
 
     // Check that the signer is the owner
     require(signer == owner);
