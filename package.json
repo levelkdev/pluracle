@@ -97,5 +97,20 @@
   },
   "eslintConfig": {
     "extends": "react-app"
-  }
+  },
+  "description": "Pluracle A network of oracles, starts automated oracles form 0 and expose offchain data on the blockchain super easily.",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/levelkdev/pluracle.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/levelkdev/pluracle/issues"
+  },
+  "homepage": "https://github.com/levelkdev/pluracle#readme"
 }
