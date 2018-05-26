@@ -13,30 +13,32 @@ import "./interfaces/ISignedOracle.sol";
 contract UintPluracle is Ownable {
   using SafeMath for uint256;
 
-  ISignedOracle[] oracles;
+  ISignedOracle[] public _oracles;
   uint256 public _data;
   uint256 public _reward;
   uint256 public _lastTimestamp;
   uint256 public _maximumUpdateFrequency;
-  uint256 public _pluracleDataType;
+  string public _pluracleDataType;
 
   function UintPluracle(
-    uint256 reward
+    uint256 reward,
+    uint256 maximumUpdateFrequency
   ) payable {
     _reward = reward;
+    _maximumUpdateFrequency = maximumUpdateFrequency;
     _pluracleDataType = "uint256";
   }
 
-  function update(bytes32 data, uint256 dataTimestamp, bytes signature) public {
+  function update() public {
     // Check that time has passed since last update
     require((now - _lastTimestamp) > _maximumUpdateFrequency );
 
     // Get all prices
     uint256 totalPrice;
     uint256 totalOracles;
-    for(uint8 i = 0; i < oracles.length; i ++) {
-      if (oracles[i] != address(0)) {
-        totalPrice = totalPrice.add(OracleCasting.bytesToUint(oracles[i].data()));
+    for(uint8 i = 0; i < _oracles.length; i ++) {
+      if (_oracles[i] != address(0)) {
+        totalPrice = totalPrice.add(OracleCasting.bytesToUint(_oracles[i].data()));
         totalOracles = totalOracles.add(1);
       }
     }
@@ -49,21 +51,22 @@ contract UintPluracle is Ownable {
     msg.sender.transfer(_reward);
   }
 
-  function edit(uint256 reward) onlyOwner {
+  function edit(uint256 reward) onlyOwner public {
     _reward = reward;
   }
 
-  function addOracle(address newOracle) onlyOwner {
-    require(newOracle.dataType == _pluracleDataType)
-    oracles.push(ISignedOracle(newOracle));
+  function addOracle(address newOracle) onlyOwner public {
+    bytes32 newOracleTypeHash = keccak256(ISignedOracle(newOracle).dataType());
+    require(newOracleTypeHash == keccak256(_pluracleDataType));
+    _oracles.push(ISignedOracle(newOracle));
   }
 
-  function removeOracle(uint256 oracleIndex) onlyOwner {
-    delete oracles[oracleIndex];
+  function removeOracle(uint256 oracleIndex) onlyOwner public {
+    delete _oracles[oracleIndex];
   }
 
-  function setMaximumUpdateFrequency(uint256 newMaximumUpdateFrequency) onlyOwner {
-    _maximumUpdateFrequency = newUpdateFrequency
+  function setMaximumUpdateFrequency(uint256 newUpdateFrequency) onlyOwner public {
+    _maximumUpdateFrequency = newUpdateFrequency;
   }
 
   function dataType() public view returns (string) {
@@ -80,6 +83,10 @@ contract UintPluracle is Ownable {
 
   function reward() public view returns (uint256) {
     return _reward;
+  }
+
+  function oracles() public view returns (ISignedOracle[]) {
+    return _oracles;
   }
 
   function() payable {}
