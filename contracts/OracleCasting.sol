@@ -9,6 +9,8 @@ import "zeppelin-solidity/contracts/math/SafeMath.sol";
  */
 library OracleCasting {
 
+  /// @dev Cast a string from a bytes32 variable
+  /// @param data bytes32 data to be parsed
   function bytesToString(bytes32 data) public view returns(string) {
     bytes memory bytesString = new bytes(32);
     uint charCount = 0;
@@ -26,18 +28,26 @@ library OracleCasting {
     return string(bytesStringTrimmed);
   }
 
+  /// @dev Cast a int from a bytes32 variable
+  /// @param data bytes32 data to be parsed
   function bytesToInt(bytes32 data) public view returns(int) {
     return int(data);
   }
 
+  /// @dev Cast a uint from a bytes32 variable
+  /// @param data bytes32 data to be parsed
   function bytesToUint(bytes32 data) public view returns(uint256) {
     return uint256(data);
   }
 
+  /// @dev Cast a bool from a bytes32 variable
+  /// @param data bytes32 data to be parsed
   function bytesToBool(bytes32 data) public view returns(bool) {
     return (data != bytes32(0));
   }
 
+  /// @dev Cast an address from a bytes32 variable
+  /// @param data bytes32 data to be parsed
   function bytesToAddress(bytes32 data) public view returns(address) {
     return address(data);
   }
