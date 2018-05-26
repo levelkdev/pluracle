@@ -7,5 +7,5 @@ pragma solidity ^0.4.24;
 contract IDataFeedOracle {
   function dataType() public view returns (string);
   function lastTimestamp() public view returns (uint256);
-  function data() public view returns (bytes);
+  function data() public view returns (bytes32);
 }
