@@ -20,21 +20,25 @@ contract SignedOracle is Ownable {
 
   function SignedOracle(
     uint256 reward, uint256 timeDelayAllowed, string dataType
-  ) {
+  ) payable {
     _reward = reward;
     _timeDelayAllowed = timeDelayAllowed;
     _dataType = dataType;
   }
 
+  event log(bytes32 msg);
+
   function update(bytes data, uint256 dataTimestamp, bytes signature) public {
     // Check the dataTimestamp is not too old
-    require(now.sub(dataTimestamp) < _timeDelayAllowed);
+    require(now.sub(dataTimestamp) <= _timeDelayAllowed);
 
     // Generate message hash
+    bytes memory prefix = "\x19Ethereum Signed Message:\n32";
     bytes32 messageSigned = sha3(data, dataTimestamp);
+    bytes32 prefixedHash = sha3(prefix, messageSigned);
 
     // Recover signer from the signature with messageSigned
-    address signer = ECRecovery.recover(messageSigned, signature);
+    address signer = ECRecovery.recover(prefixedHash, signature);
 
     // Check that the signer is the owner
     require(signer == owner);
