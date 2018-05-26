@@ -21,13 +21,14 @@
     "truffle": "^4.1.11"
   },
   "dependencies": {
+    "bip39": "^2.5.0",
     "chai": "^4.1.1",
     "chai-as-promised": "^7.1.1",
     "chai-bignumber": "^2.0.1",
-    "ethereumjs-util": "^5.2.0",
-    "truffle-hdwallet-provider": "0.0.5",
+    "moment": "^2.22.1",
+    "request": "^2.87.0",
+    "truffle-hdwallet-provider": "^0.0.3",
     "web3": "^1.0.0-beta.34",
-    "zeppelin-solidity": "^1.9.0",
-    "truffle-hdwallet-provider": "^0.0.3"
+    "zeppelin-solidity": "^1.9.0"
   }
 }

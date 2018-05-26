@@ -1,3 +1,4 @@
 {
-  "network": "kovan_infura"
+  "network": "kovan_infura",
+  "makerSignedOracleAddress": ""
 }
