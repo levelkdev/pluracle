@@ -1,0 +1,22 @@
+{
+  "name": "pluracle",
+  "version": "0.0.1",
+  "description": "A decentralized and autonomous oracle network.",
+  "main": "index.js",
+  "scripts": {
+    "compile": "node_modules/.bin/truffle compile",
+    "test": "scripts/test.sh"
+  },
+  "author": "Augusto Lemble <augusto@winidngtree.com>",
+  "license": "ISC",
+  "devDependencies": {
+    "ethereumjs-testrpc": "^6.0.3",
+    "truffle": "^4.1.11"
+  },
+  "dependencies": {
+    "chai": "^4.1.1",
+    "chai-as-promised": "^7.1.1",
+    "chai-bignumber": "^2.0.1",
+    "zeppelin-solidity": "^1.9.0"
+  }
+}
