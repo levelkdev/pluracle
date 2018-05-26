@@ -13,7 +13,7 @@ contract CentralizedOracle is IDataFeedOracle, Ownable {
   uint256 _lastTimestamp;
   bytes _data;
 
-  function CentralizedOracle(string dataType) {
+  function CentralizedOracle(string dataType) public {
     _dataType = dataType;
   }
 
