@@ -4,7 +4,7 @@ import './interfaces/IHistoryDataFeedOracle.sol';
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
-contract HistoryOracle is IHistoryDataFeedOracle, Ownable {
+contract HistoryCentralizedOracle is IHistoryDataFeedOracle, Ownable {
   using SafeMath for uint256;
 
   struct DataPoint {
@@ -17,18 +17,19 @@ contract HistoryOracle is IHistoryDataFeedOracle, Ownable {
   uint256 _lastTimestamp;
   bytes32 _data;
   uint public _updatePeriod;
-  uint constant NUM_DATAPOINTS = 100;
-  DataPoint[NUM_DATAPOINTS] public _history;
+  uint public _numDataPoints;
+  DataPoint[] public _history;
 
-  function HistoryOracle(string dataType, uint updatePeriod)
+  function HistoryOracle(string dataType, uint updatePeriod, numDataPoints)
     public 
   {
-    _updatePeriod = updatePeriod;
     _dataType = dataType;
+    _updatePeriod = updatePeriod;
+    _numDataPoints = numDataPoints;
   }
 
   function dataAtTimestamp(uint dataTimestamp) public view returns (bytes32) {
-    DataPoint dataPoint = _history[(dataTimestamp / _updatePeriod) % NUM_DATAPOINTS];
+    DataPoint dataPoint = _history[(dataTimestamp / _updatePeriod) % _numDataPoints];
     require(dataPoint.exists);
     require(dataTimestamp.add(_updatePeriod) > dataPoint.dataTimestamp);
     return dataPoint.data;
@@ -37,11 +38,11 @@ contract HistoryOracle is IHistoryDataFeedOracle, Ownable {
   function update(bytes32 data, uint256 dataTimestamp) public onlyOwner {
     require(dataTimestamp > _lastTimestamp);
     _lastTimestamp = dataTimestamp;
-    _history[(dataTimestamp / _updatePeriod) % NUM_DATAPOINTS] = DataPoint(data, dataTimestamp, true);
+    _history[(dataTimestamp / _updatePeriod) % _numDataPoints] = DataPoint(data, dataTimestamp, true);
   }
 
   function hasDatapoint(uint dataTimestamp) public view returns (bool) {
-    DataPoint dataPoint = _history[(dataTimestamp / _updatePeriod) % NUM_DATAPOINTS];
+    DataPoint dataPoint = _history[(dataTimestamp / _updatePeriod) % _numDataPoints];
     return dataPoint.exists && dataTimestamp.add(_updatePeriod) > dataPoint.dataTimestamp;
   }
   
