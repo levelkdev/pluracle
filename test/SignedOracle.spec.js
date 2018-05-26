@@ -7,11 +7,9 @@ require('chai')
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
 
-contract( 'SignedOracle', function (accounts) {
+const ZERO = '0x0000000000000000000000000000000000000000000000000000000000000000'
+contract( 'SignedOracle', function ([owner, user, attacker]) {
   let signedOracle;
-  let owner = accounts[0];
-  let user = accounts[1];
-  let attacker = accounts[5];
   let signature;
 
   const REWARD = web3.utils.toWei('0.01', 'ether')
@@ -32,21 +30,21 @@ contract( 'SignedOracle', function (accounts) {
   it('Update with old timestamp. Expect Throw', async () => {
     const BAD_TIMESTAMP = TIMESTAMP - 4000;
     signedOracle.update(DATA, BAD_TIMESTAMP, signature).should.be.rejectedWith(EVMRevert);
-    expect(await signedOracle._data()).to.eql('0x0000000000000000000000000000000000000000000000000000000000000000'); //default value
+    expect(await signedOracle._data()).to.eql(ZERO); //default value
     }
   )
 
   it('Update with altered data. Expect Throw', async () => {
     const BAD_DATA = web3.utils.toHex(100);
     signedOracle.update(BAD_DATA, TIMESTAMP, signature).should.be.rejectedWith(EVMRevert);
-    expect(await signedOracle._data()).to.eql('0x0000000000000000000000000000000000000000000000000000000000000000'); //default value
+    expect(await signedOracle._data()).to.eql(ZERO); //default value
   })
   it('Update with altered signature. Expect Throw', async () => {
     const message = await web3.utils.soliditySha3({type: 'bytes32', value: DATA}, {type: 'uint256', value: TIMESTAMP});
     signature = await web3.eth.sign(message, attacker);
 
     signedOracle.update(DATA, TIMESTAMP, signature).should.be.rejectedWith(EVMRevert);
-    expect(await signedOracle._data()).to.eql('0x0000000000000000000000000000000000000000000000000000000000000000'); //default value
+    expect(await signedOracle._data()).to.eql(ZERO); //default value
 
   })
   it('Update. Expect ok', async () => {
@@ -63,7 +61,7 @@ contract( 'SignedOracle', function (accounts) {
       { from: owner}
     );
     signedOracle.update(DATA, TIMESTAMP, signature).should.be.rejectedWith(EVMRevert);
-    expect(await signedOracle._data()).to.eql('0x0000000000000000000000000000000000000000000000000000000000000000'); //default value
+    expect(await signedOracle._data()).to.eql(ZERO); //default value
   })
 
   it('Update. Expect funds to be transfered', async () => {
