@@ -7,7 +7,7 @@ require('chai')
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
 
-contract.only( 'SignedOracle', function (accounts) {
+contract( 'SignedOracle', function (accounts) {
   let signedOracle;
   let owner = accounts[0];
   let user = accounts[1];
