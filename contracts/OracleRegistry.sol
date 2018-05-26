@@ -63,7 +63,7 @@ contract OracleRegistry is Ownable {
 
     emit OracleAdded(_address, _owner, _dataType, _description);
   }
-	
+
   /// @dev Function for removing an oracle from the registry
   /// @param _address Address of the oracle contract to remove
   function removeOracle(address _address) onlyOwner public {
@@ -85,7 +85,7 @@ contract OracleRegistry is Ownable {
     Oracle storage _oracle = oracles[_address];
 
     // require caller of function to be the owner of the oracle
-    require(_oracle.owner == msg.sender);	
+    require(_oracle.owner == msg.sender);
 
     // update description
     _oracle.description = _description;
