@@ -9,21 +9,21 @@ import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 contract OracleRegistry is Ownable {
 
   /// @dev Event for logging the addition of an oracle to the registry
-  /// @param type The type of the oracle
-  /// @param address The address of the oracle contract
+  /// @param oracleType The type of the oracle
+  /// @param addr The address of the oracle contract
   /// @param owner The owner of the oracle contract
   /// @param dataType The data type of the oracle data feed
   /// @param description The description of the oracle
   event OracleAdded(string oracleType, address addr, address owner, string dataType, string description);
 
   /// @dev Event for logging the removal of an oracle from the registry
-  /// @param type The type of the oracle
-  /// @param address The address of the oracle contract
+  /// @param oracleType The type of the oracle
+  /// @param addr The address of the oracle contract
   event OracleRemoved(string oracleType, address addr);
 
   /// @dev Event for logging the update of an oracle description
-  /// @param type The type of the oracle
-  /// @param address The address of the oracle contract
+  /// @param oracleType The type of the oracle
+  /// @param addr The address of the oracle contract
   /// @param description The description of the oracle
   event OracleDescriptionUpdated(string oracleType, address addr, string description);
 
