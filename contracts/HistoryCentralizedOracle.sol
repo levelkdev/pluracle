@@ -31,7 +31,7 @@ contract HistoryCentralizedOracle is IHistoryDataFeedOracle, Ownable {
   function dataAtTimestamp(uint dataTimestamp) public view returns (bytes32) {
     DataPoint dataPoint = _history[(dataTimestamp / _updatePeriod) % _numDataPoints];
     require(dataPoint.exists);
-    require(dataTimestamp.add(_updatePeriod) > dataPoint.dataTimestamp);
+    require(dataTimestamp.add(_updatePeriod) > dataPoint.dataTimestamp && dataTimestamp.sub(_updatePeriod) < dataPoint.dataTimestamp);
     return dataPoint.data;
   }
 
