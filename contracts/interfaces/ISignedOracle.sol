@@ -1,6 +1,6 @@
 pragma solidity 0.4.24;
 
-import './IDataFeedOracle';
+import './IDataFeedOracle.sol';
 
 /**
  * @title ISignedOracle
@@ -8,8 +8,8 @@ import './IDataFeedOracle';
  */
 contract ISignedOracle is IDataFeedOracle {
   function update(bytes data, uint256 dataTimestamp, bytes signature) public;
-  function edit(uint256 reward, uint256 timeDelayAllowed) onlyOwner;
-  function transferOwnership(address newOwner) onlyOwner;
+  function edit(uint256 reward, uint256 timeDelayAllowed) public;
+  function transferOwnership(address newOwner) public;
   function getOwner() public view returns (address);
   function reward() public view returns (uint256);
   function timeDelayAllowed() public view returns (uint256);

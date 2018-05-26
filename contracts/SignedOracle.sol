@@ -1,19 +1,18 @@
 pragma solidity 0.4.24;
 
-import './IDataFeedOracle';
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "zeppelin-solidity/contracts/ECRecovery.sol";
-import "zeppelin-solidity/contracts/SafeMath.sol";
+import "zeppelin-solidity/contracts/math/SafeMath.sol";
 
 
 /**
  * @title SignedOracle
  * @dev An oracle that will require the a signature of the owner to be updated.
  */
-contract SignedOracle {
+contract SignedOracle is Ownable {
   using SafeMath for uint256;
 
-  bytes public _lastData;
+  bytes public _data;
   uint256 public _reward;
   uint256 public _timeDelayAllowed;
   uint256 public _lastTimestamp;
@@ -23,13 +22,13 @@ contract SignedOracle {
     uint256 reward, uint256 timeDelayAllowed, string dataType
   ) {
     _reward = reward;
-    _timeDelay = timeDelayAllowed;
+    _timeDelayAllowed = timeDelayAllowed;
     _dataType = dataType;
   }
 
   function update(bytes data, uint256 dataTimestamp, bytes signature) public {
     // Check the dataTimestamp is not too old
-    require(now.sub(dataTimestamp) < timeDelay);
+    require(now.sub(dataTimestamp) < _timeDelayAllowed);
 
     // Generate message hash
     bytes32 messageSigned = sha3(data, dataTimestamp);
@@ -45,7 +44,7 @@ contract SignedOracle {
     _lastTimestamp = now;
 
     // Tranfer the update reward to the msg.sender
-    msg.sender.transfer(reward);
+    msg.sender.transfer(_reward);
   }
 
   function edit(uint256 reward, uint256 timeDelayAllowed) onlyOwner {
