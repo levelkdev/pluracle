@@ -20,7 +20,7 @@ contract HistoryCentralizedOracle is IHistoryDataFeedOracle, Ownable {
   uint public _numDataPoints;
   DataPoint[] public _history;
 
-  function HistoryOracle(string dataType, uint updatePeriod, numDataPoints)
+  function HistoryOracle(string dataType, uint updatePeriod, uint numDataPoints)
     public 
   {
     _dataType = dataType;
