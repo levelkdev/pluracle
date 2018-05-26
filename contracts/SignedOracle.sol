@@ -43,7 +43,6 @@ contract SignedOracle is Ownable {
     // Generate message hash
     bytes32 messageSigned = keccak256(data, dataTimestamp);
     bytes memory prefix = "\x19Ethereum Signed Message:\n32";
-    bytes32 messageSigned = sha3(data, dataTimestamp);
     bytes32 prefixedHash = sha3(prefix, messageSigned);
 
     // Recover signer from the signature with messageSigned
