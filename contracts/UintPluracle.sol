@@ -54,7 +54,7 @@ contract UintPluracle is Ownable {
   }
 
   function addOracle(address newOracle) onlyOwner {
-    require(newOracle.dataType == _pluracleDataType)
+    require(newOracle.dataType == _pluracleDataType);
     oracles.push(ISignedOracle(newOracle));
   }
 
