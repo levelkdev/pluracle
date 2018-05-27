@@ -2,7 +2,6 @@ pragma solidity 0.4.24;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
-import "./OracleCasting.sol";
 import "./interfaces/ISignedOracle.sol";
 
 
@@ -38,7 +37,7 @@ contract UintPluracle is Ownable {
     uint256 totalOracles;
     for(uint8 i = 0; i < _oracles.length; i ++) {
       if (_oracles[i] != address(0)) {
-        totalPrice = totalPrice.add(OracleCasting.bytesToUint(_oracles[i].data()));
+        totalPrice = totalPrice.add(_oracles[i].data());
         totalOracles = totalOracles.add(1);
       }
     }
