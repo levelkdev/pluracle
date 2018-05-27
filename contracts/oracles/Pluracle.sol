@@ -2,7 +2,7 @@ pragma solidity 0.4.24;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
-import "../interfaces/ISignedOracle.sol";
+import "../interfaces/IDataFeedOracle.sol";
 
 
 /**
@@ -12,7 +12,7 @@ import "../interfaces/ISignedOracle.sol";
 contract Pluracle is Ownable {
   using SafeMath for uint256;
 
-  ISignedOracle[] public _oracles;
+  IDataFeedOracle[] public _oracles;
   uint256 public _data;
   uint256 public _reward;
   uint256 public _lastTimestamp;
@@ -55,9 +55,11 @@ contract Pluracle is Ownable {
   }
 
   function addOracle(address newOracle) onlyOwner public {
-    bytes32 newOracleTypeHash = keccak256(ISignedOracle(newOracle).dataType());
+    require(newOracle != address(this));
+
+    bytes32 newOracleTypeHash = keccak256(IDataFeedOracle(newOracle).dataType());
     require(newOracleTypeHash == keccak256(_pluracleDataType));
-    _oracles.push(ISignedOracle(newOracle));
+    _oracles.push(IDataFeedOracle(newOracle));
   }
 
   function removeOracle(uint256 oracleIndex) onlyOwner public {
@@ -84,7 +86,7 @@ contract Pluracle is Ownable {
     return _reward;
   }
 
-  function oracles() public view returns (ISignedOracle[]) {
+  function oracles() public view returns (IDataFeedOracle[]) {
     return _oracles;
   }
 
