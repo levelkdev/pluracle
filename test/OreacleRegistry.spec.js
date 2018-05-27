@@ -273,7 +273,7 @@ contract('OracleRegistry and Factory', function ([registryOwner, factoryOwner, o
 
   });
 
-  it.only('Create puracle of pluracles ¯\_(ツ)_/¯ ', async () => {
+  it('Create puracle of pluracles ¯\_(ツ)_/¯ ', async () => {
     // SIMPLE ORACLE
     let createTx_0 = await simpleOracleFactory.create("simpleOracle 0",
       { value: web3.utils.toWei("1"), from: oracleOwner_0 }
@@ -415,5 +415,80 @@ contract('OracleRegistry and Factory', function ([registryOwner, factoryOwner, o
     assert.equal(parseInt(oracleInfo[3]), 40);
     expect(parseInt(oracleInfo[4])).closeTo(TIMESTAMP_PLURACLE, 2); // because of my slow pc
     // END OF PLURACLE OF PLURACLES!
+  })
+  it('Create a Mixed puracle t(ツt) ', async () => {
+    let createTx_0 = await simpleOracleFactory.create("simpleOracle 0",
+      { value: web3.utils.toWei("1"), from: oracleOwner_0 }
+    );
+    let createTx_1 = await signedOracleFactory.create(
+      REWARD, TIME_DELAY_ALLOWED, "SignedOracle 0",
+      { value: web3.utils.toWei("1"), from: oracleOwner_1 }
+    );
+    let createTx_2 = await signedOracleFactory.create(
+      REWARD, TIME_DELAY_ALLOWED, "SignedOracle 1",
+      { value: web3.utils.toWei("1"), from: oracleOwner_2 }
+    );
+    let createTx_3 = await pluracleFactory.create(
+      REWARD, 0, "Mixed Pluracle",
+      { value: web3.utils.toWei("1"), from: oracleOwner_3 }
+    );
+
+
+  const address_0 = createTx_0.logs[0].args.addr
+  const address_1 = createTx_1.logs[0].args.addr
+  const address_2 = createTx_2.logs[0].args.addr
+  const address_3 = createTx_3.logs[0].args.addr
+
+  let simpleOracle = await SimpleOracle.at(address_0)
+  let signedOracle_0 = await SignedOracle.at(address_1)
+  let signedOracle_1 = await SignedOracle.at(address_2)
+  let pluracle = await Pluracle.at(address_3)
+
+  await pluracle.addOracle(signedOracle_0.address, {from: oracleOwner_3});
+  await pluracle.addOracle(simpleOracle.address, {from: oracleOwner_3});
+
+  const DATA_0 = 20;
+  await simpleOracle.update(DATA_0, {from: oracleOwner_0});
+  await pluracle.update();
+  assert.equal(parseInt(await pluracle.data()), 20);
+
+  const DATA_11 = 80;
+  const TIMESTAMP_11 = Math.floor(Date.now() / 1000);
+  const message_11 = await web3.utils.soliditySha3({type: 'uint256', value: DATA_11}, {type: 'uint256', value: TIMESTAMP_11});
+  const signature_11 = await web3.eth.sign(message_11, oracleOwner_1);
+  await signedOracle_0.update(DATA_11, TIMESTAMP_11, signature_11);
+  await pluracle.update();
+  assert.equal(parseInt(await pluracle.data()), 50);
+  let TIMESTAMP_PLURACLE = Math.floor(Date.now() / 1000);
+
+  let oracleList = await registry.getOracleList("pluracle:uint256");
+  let oracleInfo = await registry.getOracleInfo(oracleList[0]);
+  assert.equal(oracleList[0], address_3);
+  assert.equal(oracleInfo[0], oracleOwner_3);
+  assert.equal(oracleInfo[1], "pluracle:uint256");
+  assert.equal(oracleInfo[2], "Mixed Pluracle");
+  assert.equal(parseInt(oracleInfo[3]), 50);
+  expect(parseInt(oracleInfo[4])).closeTo(TIMESTAMP_PLURACLE, 2); // because of my slow pc
+
+  await pluracle.addOracle(signedOracle_1.address, {from: oracleOwner_3});
+  const DATA = 20;
+  const TIMESTAMP = Math.floor(Date.now() / 1000);
+  const message = await web3.utils.soliditySha3({type: 'uint256', value: DATA}, {type: 'uint256', value: TIMESTAMP});
+  const signature = await web3.eth.sign(message, oracleOwner_2);
+  await signedOracle_1.update(DATA, TIMESTAMP, signature);
+  await pluracle.update();
+  assert.equal(parseInt(await pluracle.data()), 40);
+  TIMESTAMP_PLURACLE = Math.floor(Date.now() / 1000);
+
+  oracleList = await registry.getOracleList("pluracle:uint256");
+  oracleInfo = await registry.getOracleInfo(oracleList[0]);
+  assert.equal(oracleList[0], address_3);
+  assert.equal(oracleInfo[0], oracleOwner_3);
+  assert.equal(oracleInfo[1], "pluracle:uint256");
+  assert.equal(oracleInfo[2], "Mixed Pluracle");
+  assert.equal(parseInt(oracleInfo[3]), 40);
+  expect(parseInt(oracleInfo[4])).closeTo(TIMESTAMP_PLURACLE, 2); // because of my slow pc
+
+
   })
 })
