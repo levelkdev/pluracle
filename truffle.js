@@ -5,11 +5,13 @@ module.exports = {
       port: 8545,
       network_id: "*" // Match any network id
     },
-    kovan: getKovanConfig()
+    kovan: getKovanConfig(),
+    kovan_infura: getInfuraConfig('kovan', 42),
+    ropsten_infura: getInfuraConfig('ropsten', 3)
   }
 };
 
-function getKovanConfig () {
+function getInfuraConfig (networkName, networkId) {
   var HDWalletProvider = require('truffle-hdwallet-provider')
   var secrets = {}
   try {
@@ -18,13 +20,11 @@ function getKovanConfig () {
     console.log('could not find ./secrets.json')
   }
 
-  var kovanProvider = () => {
-    const provider = new HDWalletProvider(secrets.mnemonic, 'https://kovan.infura.io/' + secrets.infura_apikey)
-    return provider
-  }
-
   return {
-    network_id: 42,
-    provider: kovanProvider
+    network_id: networkId,
+    provider: () => {
+      return new HDWalletProvider(secrets.mnemonic, `https://${networkName}.infura.io/` + secrets.infura_apikey)
+    },
+    gas: 4600000
   }
 }

@@ -3,13 +3,14 @@ pragma solidity 0.4.24;
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "zeppelin-solidity/contracts/ECRecovery.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
+import "zos-lib/contracts/migrations/Initializable.sol";
 
 
 /**
  * @title SignedOracle
  * @dev An oracle that will require the a signature of the owner to be updated.
  */
-contract SignedOracle is Ownable {
+contract SignedOracleV1 is Ownable, Initializable {
   using SafeMath for uint256;
 
   uint256 public _data;
@@ -19,12 +20,14 @@ contract SignedOracle is Ownable {
 
   event Updated(uint256 newData);
 
-  /// @dev Constructor
+  /// @dev initialize
+  /// @param _owner address
   /// @param reward bytes32 the wei reward per update
   /// @param timeDelayAllowed maximun amount of time that the data can be outdated
-  function SignedOracle(
-    uint256 reward, uint256 timeDelayAllowed
-  ) payable public{
+  function initialize(
+    address _owner, uint256 reward, uint256 timeDelayAllowed
+  ) payable public {
+    owner = _owner;
     _reward = reward;
     _timeDelayAllowed = timeDelayAllowed;
   }
@@ -50,16 +53,16 @@ contract SignedOracle is Ownable {
 
     // Update the oracle data
     _data = data;
-    _lastTimestamp = now;
+    _lastTimestamp = dataTimestamp;
 
-    Updated(_data);
+    emit Updated(_data);
 
     // Tranfer the update reward to the msg.sender
     msg.sender.transfer(_reward);
   }
 
   /// @dev Edit the oracle properties
-  /// @param reward bytes32 the wei reward per update
+  /// @param reward uint256 the wei reward per update
   /// @param timeDelayAllowed maximun amount of time that the data can be outdated
   function edit(uint256 reward, uint256 timeDelayAllowed) onlyOwner public {
     _reward = reward;

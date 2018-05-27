@@ -1,4 +1,4 @@
-const SignedOracle = artifacts.require("SignedOracle.sol");
+const MakerSignedOracle = artifacts.require("MakerSignedOracle.sol");
 const EVMRevert = require('./helpers/EVMRevert');
 require('chai')
   .use(require('chai-as-promised'))
@@ -7,7 +7,7 @@ require('chai')
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
 
-contract('SignedOracle', function ([owner, user, attacker]) {
+contract( 'MakerSignedOracle', function ([owner, user, attacker]) {
   let signedOracle;
   let signature;
 
@@ -18,7 +18,7 @@ contract('SignedOracle', function ([owner, user, attacker]) {
   const TIMESTAMP = Math.floor(Date.now() / 1000);
 
   beforeEach(async function () {
-    signedOracle = await SignedOracle.new(
+    signedOracle = await MakerSignedOracle.new(
       REWARD, TIME_DELAY_ALLOWED,
       {from: owner, value: web3.utils.toWei('3')});
     const message = await web3.utils.soliditySha3({type: 'uint256', value: DATA}, {type: 'uint256', value: TIMESTAMP});
@@ -49,11 +49,12 @@ contract('SignedOracle', function ([owner, user, attacker]) {
     const result = await signedOracle.update(DATA, TIMESTAMP, signature);
     const oracleData = await signedOracle.data();
     expect(parseInt(await signedOracle.data())).to.eql(120); //default value
+    console.log(await signedOracle.peek(), await signedOracle.read())
   })
 
   it('Update. Expect throw for no funds', async () => {
     // Deploy signed oracle with no funds
-    signedOracle = await SignedOracle.new(
+    signedOracle = await MakerSignedOracle.new(
       REWARD,
       TIME_DELAY_ALLOWED,
       { from: owner}

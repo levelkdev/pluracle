@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
-import './OracleRegistry.sol';
-import './SignedOracle.sol';
+import '../OracleRegistry.sol';
+import '../oracles/SignedOracle.sol';
 
 /**
  * @title SignedOracleFactory

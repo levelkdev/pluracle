@@ -1,6 +1,6 @@
 pragma solidity 0.4.24;
 
-import './interfaces/IHistoryDataFeedOracle.sol';
+import '../interfaces/IHistoryDataFeedOracle.sol';
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 

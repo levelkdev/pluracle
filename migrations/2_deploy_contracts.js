@@ -14,7 +14,6 @@ const maximumUpdateFrequency = 100
 // const challenPeriod = 500
 
 module.exports = function (deployer) {
-  let configurableCoin, tokenVestingFactory
   deployer.then(() => {
     return CentralizedOracleFactory.new(dataType)
   }).then(() => {
