@@ -1,12 +1,14 @@
 pragma solidity 0.4.24;
 
-import "zeppelin-solidity/contracts/ownership/Ownable.sol";
+import "zeppelin-solidity/contracts/ownership/rbac/RBACWithAdmin.sol";
+import './interfaces/IDataFeedOracle.sol';
+
 
 /**
  * @title OracleRegistry
  * @dev A list of oracles in the network along with a brief description
  */
-contract OracleRegistry is Ownable {
+contract OracleRegistry is RBACWithAdmin {
 
   /// @dev Event for logging the addition of an oracle to the registry
   /// @param oracleType The type of the oracle
@@ -49,20 +51,24 @@ contract OracleRegistry is Ownable {
   // Mapping of oracle types
   mapping(string => OracleType) oracleTypes;
 
-  /// @dev Constructor for setting up OracleRegistry
-  function OracleRegistry() {
-    // TODO It might make sense to have the OracleFactory own the registry? Should we set this in the constructor?
-  }
-
   /// @dev Function for adding an oracle to the registry
   /// @param _type Oracle type to be added
   /// @param _address Address of the oracle contract
   /// @param _owner Address of the owner of the oracle contract
   /// @param _dataType Type of data of the Oracle of the data feed
   /// @param _description Type of data of the Oracle of the data feed
-  function addOracle(string _type, address _address, address _owner, string _dataType, string _description) onlyOwner public {
+  function addOracle(
+    string _type, address _address, address _owner,
+    string _dataType, string _description
+  ) onlyRole("factory") public {
     // get index of next address being added (same as length before oracle is added)
     uint256 _index = oracleTypes[_type].list.length;
+
+    // Check that oracle is not already created
+    require(bytes(_type).length > 0);
+    require(bytes(oracles[_address]).length == 0);
+
+    oracles[_address] = _type;
 
     oracleTypes[_type].list.push(_address);
 
@@ -73,12 +79,15 @@ contract OracleRegistry is Ownable {
 
   /// @dev Function for removing an oracle from the registry
   /// @param _address Address of the oracle contract to remove
-  function removeOracle(address _address) onlyOwner public {
+  function removeOracle(address _address) public {
     // fetch oracle type
     string _type = oracles[_address];
 
     // fetch oracle information
     Oracle _oracle = oracleTypes[_type].index[_address];
+
+    // require caller of function to be the owner of the oracle
+    require(_oracle.owner == msg.sender);
 
     // remove oracle from the oracle addresses array
     delete oracleTypes[_type].list[_oracle.listIndex];
@@ -106,5 +115,24 @@ contract OracleRegistry is Ownable {
     _oracle.description = _description;
 
     emit OracleDescriptionUpdated(_type, _address, _description);
+  }
+
+  /// @dev Get a list of the oracles by type
+  /// @param _type oracle type
+  function getOracleList(string _type) public view returns(address[]) {
+    return (oracleTypes[_type].list);
+  }
+
+  /// @dev Get the info of an oracle
+  /// @param addr address of the oracle
+  function getOracleInfo(address addr) public view returns(
+    address, string, string, uint256, uint256
+  ) {
+    string oracleType = oracles[addr];
+    address owner = oracleTypes[oracleType].index[addr].owner;
+    string description = oracleTypes[oracleType].index[addr].description;
+    uint256 data = IDataFeedOracle(addr).data();
+    uint256 lastUpdated = IDataFeedOracle(addr).lastTimestamp();
+    return (owner, oracleType, description, data, lastUpdated);
   }
 }
