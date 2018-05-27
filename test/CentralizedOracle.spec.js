@@ -6,12 +6,12 @@ require('chai')
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
 
-const ZERO = '0x0000000000000000000000000000000000000000000000000000000000000000'
+const ZERO = '0'
 
-contract.only( 'CentralizedOracle', function ([owner, attacker]) {
+contract( 'CentralizedOracle', function ([owner, attacker]) {
   let centralizedOracle;
   const DATA_TYPE = 'unit'
-  const DATA = '0x7800000000000000000000000000000000000000000000000000000000000000';
+  const DATA = '120';
 
   beforeEach(async function () {
     centralizedOracle = await CentralizedOracle.new(DATA_TYPE);
@@ -20,9 +20,9 @@ contract.only( 'CentralizedOracle', function ([owner, attacker]) {
   it('Update with attacker. Expect Throw', async () => {
     centralizedOracle.update(DATA, {from: attacker})
       .should.be.rejectedWith(EVMRevert);
-    expect(await centralizedOracle.data()).to.eql(ZERO);
+    expect(await stringify(centralizedOracle.data())).to.eql(ZERO);
   })
-  it('Update with attacker. Expect ok', async () => {
+  it('Update with owner. Expect ok', async () => {
     centralizedOracle.update(DATA);
     let data = await stringify(centralizedOracle.data())
     expect(data).to.eql(DATA);
