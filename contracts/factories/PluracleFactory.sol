@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
 import '../OracleRegistry.sol';
-import '../oracles/UintPluracle.sol';
+import '../oracles/Pluracle.sol';
 
 /**
  * @title PluracleFactory
@@ -21,7 +21,7 @@ contract PluracleFactory {
   }
 
   function create(uint256 _reward, uint256 _timeDelayAllowed, string _description) payable public {
-    UintPluracle pluracle = new UintPluracle(_reward, _timeDelayAllowed);
+    Pluracle pluracle = new Pluracle(_reward, _timeDelayAllowed);
 
     // Forward funds to the new oracle
     pluracle.transfer(msg.value);
