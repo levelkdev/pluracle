@@ -16,20 +16,17 @@ contract SignedOracle is Ownable {
   uint256 public _reward;
   uint256 public _timeDelayAllowed;
   uint256 public _lastTimestamp;
-  string public _dataType;
 
   event Updated(uint256 newData);
 
   /// @dev Constructor
   /// @param reward bytes32 the wei reward per update
   /// @param timeDelayAllowed maximun amount of time that the data can be outdated
-  /// @param dataType type of the oracle data
   function SignedOracle(
-    uint256 reward, uint256 timeDelayAllowed, string dataType
+    uint256 reward, uint256 timeDelayAllowed
   ) payable public{
     _reward = reward;
     _timeDelayAllowed = timeDelayAllowed;
-    _dataType = dataType;
   }
 
   /// @dev Update the oracle data
@@ -71,7 +68,7 @@ contract SignedOracle is Ownable {
 
   /// @dev Get the type of the data provided
   function dataType() public view returns (string) {
-    return _dataType;
+    return "uint256";
   }
 
   /// @dev Get the last time where the oracle was updated
@@ -93,5 +90,7 @@ contract SignedOracle is Ownable {
   function timeDelayAllowed() public view returns (uint256) {
     return _timeDelayAllowed;
   }
+
+  function () payable {}
 
 }
