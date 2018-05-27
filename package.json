@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "compile": "node_modules/.bin/truffle compile",
-    "test": "scripts/test.sh"
+    "test": "scripts/test.sh",
+    "deploy": "truffle migrate",
+    "deploy-rinkeby": "truffle migrate --reset --network rinkeby",
+    "deploy-kovan": "truffle migrate --reset --network kovan"
   },
   "author": "Augusto Lemble <augusto@winidngtree.com>, Matias Oveja Smith <matias@windingtree.com>, Chris Whinfrey <chris.whinfrey@levelk.io>, John Kelleher <john.kelleher@levelk.io>",
   "devDependencies": {
