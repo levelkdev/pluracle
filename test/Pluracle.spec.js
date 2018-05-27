@@ -1,6 +1,5 @@
 const SignedOracle = artifacts.require("SignedOracle.sol");
 const UintPluracle = artifacts.require("UintPluracle.sol");
-const OracleCasting = artifacts.require("OracleCasting.sol");
 
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
@@ -29,8 +28,6 @@ contract( 'SignedOracle', function ([owner, user, attacker]) {
     const message = await web3.utils.soliditySha3({type: 'uint256', value: DATA}, {type: 'uint256', value: TIMESTAMP});
     signature = await web3.eth.sign(message, owner);
 
-    const oracleCasting = await OracleCasting.new();
-    UintPluracle.link('OracleCasting', oracleCasting.address);
     uintPluracle = await UintPluracle.new(REWARD, 0, {from: owner, value: 1000000});
   });
 
