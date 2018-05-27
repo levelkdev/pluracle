@@ -27,10 +27,10 @@ contract('OracleRegistry and Factory', function ([registryOwner, factoryOwner, o
   const TIMESTAMP = Math.floor(Date.now() / 1000);
 
   beforeEach(async function () {
-    registry = await OracleRegistry.new( { from: registryOwner });
-    signedOracleFactory = await SignedOracleFactory.new(registry.address,{from: factoryOwner});
-    simpleOracleFactory = await SimpleOracleFactory.new(registry.address,{from: factoryOwner});
-    pluracleFactory = await PluracleFactory.new(registry.address,{from: factoryOwner});
+    registry = await OracleRegistry.new({from: registryOwner });
+    signedOracleFactory = await SignedOracleFactory.new(registry.address, {from: factoryOwner});
+    simpleOracleFactory = await SimpleOracleFactory.new(registry.address, {from: factoryOwner});
+    pluracleFactory = await PluracleFactory.new(registry.address, {from: factoryOwner});
     await registry.adminAddRole(signedOracleFactory.address, "factory");
     await registry.adminAddRole(simpleOracleFactory.address, "factory");
     await registry.adminAddRole(pluracleFactory.address, "factory");

@@ -12,19 +12,25 @@ contract SimpleOracle is IDataFeedOracle, Ownable {
   uint256 _lastTimestamp;
   uint256 _data;
 
+  /// @dev Update the oracle data, called by toracle owner
+  /// @param data the new data to be stored
   function update(uint256 data) public onlyOwner {
     _lastTimestamp = now;
     _data = data;
+    Updated(_data);
   }
 
+  /// @dev get oracle data type
   function dataType() public view returns (string) {
     return "uint256";
   }
 
+  /// @dev get oracle last timestamp updated
   function lastTimestamp() public view returns (uint256) {
     return _lastTimestamp;
   }
 
+  /// @dev get oracle data
   function data() public view returns (uint256) {
     return _data;
   }

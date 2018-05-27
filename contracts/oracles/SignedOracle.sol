@@ -52,7 +52,7 @@ contract SignedOracle is Ownable {
     _data = data;
     _lastTimestamp = now;
 
-    Updated(_data);
+    emit Updated(_data);
 
     // Tranfer the update reward to the msg.sender
     msg.sender.transfer(_reward);
