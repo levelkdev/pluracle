@@ -1,19 +1,19 @@
 pragma solidity 0.4.24;
 
-import './interfaces/IDataFeedOracle.sol';
+import '../interfaces/IDataFeedOracle.sol';
 import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
 
 /**
- * @title CentralizedOracle
+ * @title SimpleOracle
  * @dev An oracle whose value is set by its owner
  */
-contract CentralizedOracle is IDataFeedOracle, Ownable {
+contract SimpleOracle is IDataFeedOracle, Ownable {
 
   string _dataType;
   uint256 _lastTimestamp;
   uint256 _data;
 
-  function CentralizedOracle(string dataType) public {
+  function SimpleOracle(string dataType) public {
     _dataType = dataType;
   }
 
@@ -33,5 +33,7 @@ contract CentralizedOracle is IDataFeedOracle, Ownable {
   function data() public view returns (uint256) {
     return _data;
   }
+
+  function() payable {}
 
 }

@@ -1,7 +1,7 @@
 pragma solidity 0.4.24;
 
-import './interfaces/IHistoryDataFeedOracle.sol';
-import './interfaces/IDataFeedOracle.sol';
+import '../interfaces/IHistoryDataFeedOracle.sol';
+import '../interfaces/IDataFeedOracle.sol';
 
 /**
  * @title ComposableOracle

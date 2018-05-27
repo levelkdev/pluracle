@@ -1,4 +1,4 @@
-const CentralizedOracle = artifacts.require("CentralizedOracle.sol");
+const SimpleOracle = artifacts.require("SimpleOracle.sol");
 const EVMRevert = require('./helpers/EVMRevert');
 require('chai')
   .use(require('chai-as-promised'))
@@ -6,22 +6,22 @@ require('chai')
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
 
-contract( 'CentralizedOracle', function ([owner, attacker]) {
-  let centralizedOracle;
+contract( 'SimpleOracle', function ([owner, attacker]) {
+  let simpleOracle;
   const DATA_TYPE = 'unit256'
 
   beforeEach(async function () {
-    centralizedOracle = await CentralizedOracle.new(DATA_TYPE);
+    simpleOracle = await SimpleOracle.new(DATA_TYPE);
   });
 
   it('Update with attacker. Expect Throw', async () => {
-    centralizedOracle.update(120, {from: attacker})
+    simpleOracle.update(120, {from: attacker})
       .should.be.rejectedWith(EVMRevert);
-    expect(parseInt(await centralizedOracle.data())).to.eql(0);
+    expect(parseInt(await simpleOracle.data())).to.eql(0);
   })
   it('Update with attacker. Expect ok', async () => {
-    centralizedOracle.update(120);
-    let data = await centralizedOracle.data()
+    simpleOracle.update(120);
+    let data = await simpleOracle.data()
     expect(parseInt(data)).to.eql(120);
   })
 })
