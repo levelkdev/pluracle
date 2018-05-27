@@ -31,24 +31,24 @@ contract('OracleRegistry and Factory', function ([registryOwner, signedFactoryOw
   it('Create an oracle and register it', async () => {
     const createTx = await signedOracleFactory.create(
       REWARD, TIME_DELAY_ALLOWED, "Testing SignedOracle",
-      {value: web3.utils.toWei("1")}
+      {value: web3.utils.toWei("1"), from: signedOracleOwner_0 }
     );
     const newOracleAddr = createTx.logs[0].args.addr;
     const signedOracle = await SignedOracle.at(newOracleAddr);
 
-    assert.equal(await signedOracle.owner(), owner);
+    assert.equal(await signedOracle.owner(), signedOracleOwner_0);
 
     const DATA = 120;
     const TIMESTAMP = Math.floor(Date.now() / 1000);
     const message = await web3.utils.soliditySha3({type: 'uint256', value: DATA}, {type: 'uint256', value: TIMESTAMP});
-    signature = await web3.eth.sign(message, owner);
+    signature = await web3.eth.sign(message, signedOracleOwner_0);
     await signedOracle.update(DATA, TIMESTAMP, signature);
 
     const oracleInfo = await registry.getOracleInfo(newOracleAddr);
     const oracleList = await registry.getOracleList("signed:uint256");
 
     assert.equal(oracleList[0], newOracleAddr);
-    assert.equal(oracleInfo[0], owner);
+    assert.equal(oracleInfo[0], signedOracleOwner_0);
     assert.equal(oracleInfo[1], "signed:uint256");
     assert.equal(oracleInfo[2], "Testing SignedOracle");
     assert.equal(parseInt(oracleInfo[3]), DATA);
