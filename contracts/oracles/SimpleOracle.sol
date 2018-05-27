@@ -9,13 +9,8 @@ import 'zeppelin-solidity/contracts/ownership/Ownable.sol';
  */
 contract SimpleOracle is IDataFeedOracle, Ownable {
 
-  string _dataType;
   uint256 _lastTimestamp;
   uint256 _data;
-
-  function SimpleOracle(string dataType) public {
-    _dataType = dataType;
-  }
 
   function update(uint256 data) public onlyOwner {
     _lastTimestamp = now;
@@ -23,7 +18,7 @@ contract SimpleOracle is IDataFeedOracle, Ownable {
   }
 
   function dataType() public view returns (string) {
-    return _dataType;
+    return "uint256";
   }
 
   function lastTimestamp() public view returns (uint256) {

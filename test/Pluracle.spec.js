@@ -1,12 +1,12 @@
 const SignedOracle = artifacts.require("SignedOracle.sol");
-const UintPluracle = artifacts.require("UintPluracle.sol");
+const Pluracle = artifacts.require("Pluracle.sol");
 
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
 var BN = web3.utils.BN;
 
 contract( 'SignedOracle', function ([owner, user, attacker]) {
-  let signedOracle1, signedOracle2, signedOracle3, uintPluracle;
+  let signedOracle1, signedOracle2, signedOracle3, pluracle;
   let signature;
 
   const REWARD = 100;
@@ -28,38 +28,38 @@ contract( 'SignedOracle', function ([owner, user, attacker]) {
     const message = await web3.utils.soliditySha3({type: 'uint256', value: DATA}, {type: 'uint256', value: TIMESTAMP});
     signature = await web3.eth.sign(message, owner);
 
-    uintPluracle = await UintPluracle.new(REWARD, 0, {from: owner, value: 1000000});
+    pluracle = await Pluracle.new(REWARD, 0, {from: owner, value: 1000000});
   });
 
-  it('Add uint256 oracles in uintPluracle', async () => {
-    await uintPluracle.addOracle(signedOracle1.address);
-    await uintPluracle.addOracle(signedOracle2.address);
-    await uintPluracle.addOracle(signedOracle3.address);
+  it('Add uint256 oracles in pluracle', async () => {
+    await pluracle.addOracle(signedOracle1.address);
+    await pluracle.addOracle(signedOracle2.address);
+    await pluracle.addOracle(signedOracle3.address);
   });
 
-  it('remove an oracle in uintPluracle', async () => {
+  it('remove an oracle in pluracle', async () => {
     signedOracle4 = await SignedOracle.new(REWARD, TIME_DELAY_ALLOWED,
       {from: owner, value: 1000000}
     );
-    await uintPluracle.addOracle(signedOracle1.address);
-    await uintPluracle.addOracle(signedOracle2.address);
-    await uintPluracle.addOracle(signedOracle3.address);
-    await uintPluracle.addOracle(signedOracle4.address);
-    await uintPluracle.removeOracle(3);
-    let oracles =  await uintPluracle.oracles();
+    await pluracle.addOracle(signedOracle1.address);
+    await pluracle.addOracle(signedOracle2.address);
+    await pluracle.addOracle(signedOracle3.address);
+    await pluracle.addOracle(signedOracle4.address);
+    await pluracle.removeOracle(3);
+    let oracles =  await pluracle.oracles();
     assert.equal(signedOracle1.address, oracles[0]);
     assert.equal(signedOracle2.address, oracles[1]);
     assert.equal(signedOracle3.address, oracles[2]);
     assert.equal('0x0000000000000000000000000000000000000000', oracles[3]);
-    await uintPluracle.removeOracle(1);
-    oracles =  await uintPluracle.oracles();
+    await pluracle.removeOracle(1);
+    oracles =  await pluracle.oracles();
     assert.equal('0x0000000000000000000000000000000000000000', oracles[1]);
   });
 
   it('update pluracle and get right value', async () => {
-    await uintPluracle.addOracle(signedOracle1.address);
-    await uintPluracle.addOracle(signedOracle2.address);
-    await uintPluracle.addOracle(signedOracle3.address);
+    await pluracle.addOracle(signedOracle1.address);
+    await pluracle.addOracle(signedOracle2.address);
+    await pluracle.addOracle(signedOracle3.address);
 
     let timestamp = Math.floor(Date.now() / 1000);
     let message = await web3.utils.soliditySha3(
@@ -83,9 +83,9 @@ contract( 'SignedOracle', function ([owner, user, attacker]) {
     signature = await web3.eth.sign(message, owner);
     await signedOracle3.update(web3.utils.numberToHex(5), timestamp, signature);
 
-    await uintPluracle.update();
+    await pluracle.update();
 
-    expect(parseInt(await uintPluracle.data())).to.eql(50);
+    expect(parseInt(await pluracle.data())).to.eql(50);
   });
 
 });

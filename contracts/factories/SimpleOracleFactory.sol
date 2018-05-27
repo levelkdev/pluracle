@@ -9,10 +9,10 @@ import '../oracles/SimpleOracle.sol';
  */
 contract SimpleOracleFactory {
 
-  /// @dev Event for logging the creation of a SimpleOracle oracle
-  /// @param dataType The type of data being returned by the oracle
-  /// @param owner The owner of the SimpleOracle oracle
-  event SimpleOracleCreated(string dataType, address owner);
+  /// @dev Event for logging the creation of a simple oracle
+  /// @param addr The oracle address
+  /// @param owner The owner of the simple oracle
+  event SimpleOracleCreated(address addr, address owner);
 
   OracleRegistry public registry;
 
@@ -21,19 +21,15 @@ contract SimpleOracleFactory {
   }
 
   /// @dev Function for creating a SimpleOracle oracle
-  /// @param _dataType The type of data returned by the oracle
-  function createSimpleOracle(string _dataType, string _description) payable public {
+  function create(string _description) payable public {
 
-    SimpleOracle simpleOracle = new SimpleOracle(_dataType);
-
-    // Forward funds to the new oracle
-    simpleOracle.transfer(msg.value);
+    SimpleOracle simpleOracle = new SimpleOracle();
 
     // Transfer ownership from factory to message sender
     simpleOracle.transferOwnership(msg.sender);
 
-    registry.addOracle('SimpleOracle:uint256', simpleOracle, msg.sender, "uint256", _description);
+    registry.addOracle('simple:uint256', simpleOracle, msg.sender, "uint256", _description);
 
-    SimpleOracleCreated(_dataType, msg.sender);
+    SimpleOracleCreated(simpleOracle, msg.sender);
   }
 }

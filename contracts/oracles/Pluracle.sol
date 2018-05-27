@@ -6,10 +6,10 @@ import "../interfaces/ISignedOracle.sol";
 
 
 /**
- * @title UintPluracle
+ * @title Pluracle
  * @dev An oracle of uint256 types oracles that provides a medium price.
  */
-contract UintPluracle is Ownable {
+contract Pluracle is Ownable {
   using SafeMath for uint256;
 
   ISignedOracle[] public _oracles;
@@ -19,7 +19,7 @@ contract UintPluracle is Ownable {
   uint256 public _maximumUpdateFrequency;
   string public _pluracleDataType;
 
-  function UintPluracle(
+  function Pluracle(
     uint256 reward,
     uint256 maximumUpdateFrequency
   ) payable {
@@ -30,13 +30,13 @@ contract UintPluracle is Ownable {
 
   function update() public {
     // Check that time has passed since last update
-    require((now - _lastTimestamp) > _maximumUpdateFrequency );
+    require((now - _lastTimestamp) >= _maximumUpdateFrequency );
 
     // Get all prices
     uint256 totalPrice;
     uint256 totalOracles;
     for(uint8 i = 0; i < _oracles.length; i ++) {
-      if (_oracles[i] != address(0)) {
+      if ((_oracles[i] != address(0)) && (_oracles[i].lastTimestamp() > 0)) {
         totalPrice = totalPrice.add(_oracles[i].data());
         totalOracles = totalOracles.add(1);
       }
