@@ -12,19 +12,18 @@ contract( 'SignedOracle', function ([owner, user, attacker]) {
 
   const REWARD = 100;
   const TIME_DELAY_ALLOWED = 300 // 5 minutes
-  const DATA_TYPE = 'uint256';
 
   const DATA = web3.utils.numberToHex(120);
   const TIMESTAMP = Math.floor(Date.now() / 1000);
 
   beforeEach(async function () {
-    signedOracle1 = await SignedOracle.new(REWARD, TIME_DELAY_ALLOWED, DATA_TYPE,
+    signedOracle1 = await SignedOracle.new(REWARD, TIME_DELAY_ALLOWED,
       {from: owner, value: 1000000}
     );
-    signedOracle2 = await SignedOracle.new(REWARD, TIME_DELAY_ALLOWED, DATA_TYPE,
+    signedOracle2 = await SignedOracle.new(REWARD, TIME_DELAY_ALLOWED,
       {from: owner, value: 1000000}
     );
-    signedOracle3 = await SignedOracle.new(REWARD, TIME_DELAY_ALLOWED, DATA_TYPE,
+    signedOracle3 = await SignedOracle.new(REWARD, TIME_DELAY_ALLOWED,
       {from: owner, value: 1000000}
     );
     const message = await web3.utils.soliditySha3({type: 'uint256', value: DATA}, {type: 'uint256', value: TIMESTAMP});
@@ -42,7 +41,7 @@ contract( 'SignedOracle', function ([owner, user, attacker]) {
   });
 
   it('remove an oracle in uintPluracle', async () => {
-    signedOracle4 = await SignedOracle.new(REWARD, TIME_DELAY_ALLOWED, DATA_TYPE,
+    signedOracle4 = await SignedOracle.new(REWARD, TIME_DELAY_ALLOWED,
       {from: owner, value: 1000000}
     );
     await uintPluracle.addOracle(signedOracle1.address);

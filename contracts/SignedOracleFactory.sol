@@ -1,6 +1,6 @@
 pragma solidity 0.4.24;
 
-
+import './OracleRegistry.sol';
 import './SignedOracle.sol';
 
 /**
@@ -10,18 +10,27 @@ import './SignedOracle.sol';
 contract SignedOracleFactory {
 
   /// @dev Event for logging the creation of a signed oracle
-  /// @param reward The reward paid out for updating the oracle
-  /// @param timeDelayAllowed The time allowed 
-  /// @param dataType The type of data provided by the oracle
+  /// @param addr The oracle address
   /// @param owner The owner of the signed oracle
-  event SignedOracleCreated(uint256 reward, uint256 timeDelayAllowed, string dataType, address owner);
+  event SignedOracleCreated(address addr, address owner);
 
-  function createdSignedOracle(uint256 _reward, uint256 _timeDelayAllowed, string _dataType) public {
-    SignedOracle signedOracle = new SignedOracle(_reward, _timeDelayAllowed, _dataType);
-    
+  OracleRegistry public registry;
+
+  function SignedOracleFactory(address _registry) public {
+    registry = OracleRegistry(_registry);
+  }
+
+  function create(uint256 _reward, uint256 _timeDelayAllowed, string _description) payable public {
+    SignedOracle signedOracle = new SignedOracle(_reward, _timeDelayAllowed);
+
+    // Forward funds to the new oracle
+    signedOracle.transfer(msg.value);
+
     // Transfer ownership from factory to message sender
     signedOracle.transferOwnership(msg.sender);
-    
-    SignedOracleCreated(_reward, _timeDelayAllowed, _dataType, msg.sender);
+
+    registry.addOracle('signed:uint256', signedOracle, msg.sender, "uint256", _description);
+
+    SignedOracleCreated(signedOracle, msg.sender);
   }
 }

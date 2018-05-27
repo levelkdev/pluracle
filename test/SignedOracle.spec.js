@@ -13,14 +13,13 @@ contract( 'SignedOracle', function ([owner, user, attacker]) {
 
   const REWARD = web3.utils.toWei('0.01', 'ether')
   const TIME_DELAY_ALLOWED = '3600' // 1 hour
-  const DATA_TYPE = 'uint';
 
   const DATA = 120;
   const TIMESTAMP = Math.floor(Date.now() / 1000);
 
   beforeEach(async function () {
     signedOracle = await SignedOracle.new(
-      REWARD, TIME_DELAY_ALLOWED, DATA_TYPE,
+      REWARD, TIME_DELAY_ALLOWED,
       {from: owner, value: web3.utils.toWei('3')});
     const message = await web3.utils.soliditySha3({type: 'uint256', value: DATA}, {type: 'uint256', value: TIMESTAMP});
     signature = await web3.eth.sign(message, owner);
@@ -57,7 +56,6 @@ contract( 'SignedOracle', function ([owner, user, attacker]) {
     signedOracle = await SignedOracle.new(
       REWARD,
       TIME_DELAY_ALLOWED,
-      DATA_TYPE,
       { from: owner}
     );
     signedOracle.update(DATA, TIMESTAMP, signature).should.be.rejectedWith(EVMRevert);
