@@ -30,6 +30,7 @@
     "truffle-hdwallet-provider": "^0.0.3",
     "web3": "^1.0.0-beta.34",
     "zeppelin-solidity": "^1.9.0",
+    "truffle-hdwallet-provider": "0.0.3",
     "zos-lib": "^1.0.0"
   }
 }
