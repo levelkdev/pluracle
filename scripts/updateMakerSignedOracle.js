@@ -12,11 +12,6 @@ const MakerSignedOracle = artifacts.require('MakerSignedOracle')
 const OtherWeb3 = require('web3');
 const otherWeb3 = new OtherWeb3('http://localhost:8545');
 
-// const account = web3.eth.accounts(0, function(err, acc){
-//   console.log(err, acc)
-// })
-
-
 module.exports = async (callback) => {
   updatePriceOracle()
 
@@ -26,7 +21,7 @@ module.exports = async (callback) => {
       request('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD', { json: true }, (err, res, body) => {
         if (err) { return console.log(err) }
 
-        const makerSignedOracle = MakerSignedOracle.at("0x7d40f60890bc2f66a5e05bc998fe07ffbcbde3e0")
+        const makerSignedOracle = MakerSignedOracle.at("0x751221a0723811a9088d558aeb618f8dac3c8837")
         const now = moment().subtract(1, "minutes").unix()
         const price = res.body.USD
         let data = web3.toWei(price)
