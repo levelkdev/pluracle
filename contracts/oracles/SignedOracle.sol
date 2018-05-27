@@ -59,7 +59,7 @@ contract SignedOracle is Ownable {
   }
 
   /// @dev Edit the oracle properties
-  /// @param reward bytes32 the wei reward per update
+  /// @param reward uint256 the wei reward per update
   /// @param timeDelayAllowed maximun amount of time that the data can be outdated
   function edit(uint256 reward, uint256 timeDelayAllowed) onlyOwner public {
     _reward = reward;

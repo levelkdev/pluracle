@@ -21,7 +21,7 @@ module.exports = async (callback) => {
       request('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD', { json: true }, (err, res, body) => {
         if (err) { return console.log(err) }
 
-        const makerSignedOracle = MakerSignedOracle.at("0x751221a0723811a9088d558aeb618f8dac3c8837")
+        const makerSignedOracle = MakerSignedOracle.at("0x2e1fd419d202609166c1f5057f8c6e07efcdf373")
         const now = moment().subtract(1, "minutes").unix()
         const price = res.body.USD
         let data = web3.toWei(price)
