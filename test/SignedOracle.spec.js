@@ -7,7 +7,6 @@ require('chai')
 const Web3 = require('web3');
 const web3 = new Web3('http://localhost:8545');
 
-const ZERO = '0x0000000000000000000000000000000000000000000000000000000000000000'
 contract( 'SignedOracle', function ([owner, user, attacker]) {
   let signedOracle;
   let signature;
@@ -16,40 +15,41 @@ contract( 'SignedOracle', function ([owner, user, attacker]) {
   const TIME_DELAY_ALLOWED = '3600' // 1 hour
   const DATA_TYPE = 'uint';
 
-  const DATA = web3.utils.numberToHex(120);
+  const DATA = 120;
   const TIMESTAMP = Math.floor(Date.now() / 1000);
 
   beforeEach(async function () {
     signedOracle = await SignedOracle.new(
       REWARD, TIME_DELAY_ALLOWED, DATA_TYPE,
       {from: owner, value: web3.utils.toWei('3')});
-    const message = await web3.utils.soliditySha3({type: 'bytes32', value: DATA}, {type: 'uint256', value: TIMESTAMP});
+    const message = await web3.utils.soliditySha3({type: 'uint256', value: DATA}, {type: 'uint256', value: TIMESTAMP});
     signature = await web3.eth.sign(message, owner);
   });
 
   it('Update with old timestamp. Expect Throw', async () => {
     const BAD_TIMESTAMP = TIMESTAMP - 4000;
     signedOracle.update(DATA, BAD_TIMESTAMP, signature).should.be.rejectedWith(EVMRevert);
-    expect(await signedOracle._data()).to.eql(ZERO); //default value
+    expect(parseInt(await signedOracle.data())).to.eql(0); //default value
     }
   )
 
   it('Update with altered data. Expect Throw', async () => {
-    const BAD_DATA = web3.utils.toHex(100);
-    signedOracle.update(BAD_DATA, TIMESTAMP, signature).should.be.rejectedWith(EVMRevert);
-    expect(await signedOracle._data()).to.eql(ZERO); //default value
+    const BADdata = web3.utils.toHex(100);
+    signedOracle.update(BADdata, TIMESTAMP, signature).should.be.rejectedWith(EVMRevert);
+    expect(parseInt(await signedOracle.data())).to.eql(0); //default value
   })
   it('Update with altered signature. Expect Throw', async () => {
-    const message = await web3.utils.soliditySha3({type: 'bytes32', value: DATA}, {type: 'uint256', value: TIMESTAMP});
+    const message = await web3.utils.soliditySha3({type: 'uint256', value: DATA}, {type: 'uint256', value: TIMESTAMP});
     signature = await web3.eth.sign(message, attacker);
 
     signedOracle.update(DATA, TIMESTAMP, signature).should.be.rejectedWith(EVMRevert);
-    expect(await signedOracle._data()).to.eql(ZERO); //default value
+    expect(parseInt(await signedOracle.data())).to.eql(0); //default value
 
   })
   it('Update. Expect ok', async () => {
     const result = await signedOracle.update(DATA, TIMESTAMP, signature);
-    expect(await signedOracle._data()).to.eql('0x7800000000000000000000000000000000000000000000000000000000000000');
+    const oracleData = await signedOracle.data();
+    expect(parseInt(await signedOracle.data())).to.eql(120); //default value
   })
 
   it('Update. Expect throw for no funds', async () => {
@@ -61,7 +61,7 @@ contract( 'SignedOracle', function ([owner, user, attacker]) {
       { from: owner}
     );
     signedOracle.update(DATA, TIMESTAMP, signature).should.be.rejectedWith(EVMRevert);
-    expect(await signedOracle._data()).to.eql(ZERO); //default value
+    expect(parseInt(await signedOracle.data())).to.eql(0); //default value
   })
 
   it('Update. Expect funds to be transfered', async () => {

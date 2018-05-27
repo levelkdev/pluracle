@@ -12,13 +12,13 @@ import "zeppelin-solidity/contracts/math/SafeMath.sol";
 contract SignedOracle is Ownable {
   using SafeMath for uint256;
 
-  bytes32 public _data;
+  uint256 public _data;
   uint256 public _reward;
   uint256 public _timeDelayAllowed;
   uint256 public _lastTimestamp;
   string public _dataType;
 
-  event Updated(bytes32 newData);
+  event Updated(uint256 newData);
 
   /// @dev Constructor
   /// @param reward bytes32 the wei reward per update
@@ -36,7 +36,7 @@ contract SignedOracle is Ownable {
   /// @param data the new data to be updated
   /// @param dataTimestamp the timestamp of the data provided
   /// @param signature the signature of the oracle owner
-  function update(bytes32 data, uint256 dataTimestamp, bytes signature) public {
+  function update(uint256 data, uint256 dataTimestamp, bytes signature) public {
     // Check the dataTimestamp is not too old
     require(now.sub(dataTimestamp) <= _timeDelayAllowed);
 
@@ -80,7 +80,7 @@ contract SignedOracle is Ownable {
   }
 
   /// @dev Get the oracle data
-  function data() public view returns (bytes32) {
+  function data() public view returns (uint256) {
     return _data;
   }
 
