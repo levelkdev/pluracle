@@ -2,7 +2,7 @@ pragma solidity 0.4.24;
 
 import "zeppelin-solidity/contracts/ownership/Ownable.sol";
 import "zeppelin-solidity/contracts/math/SafeMath.sol";
-import "./interfaces/ISignedOracle.sol";
+import "../interfaces/ISignedOracle.sol";
 
 
 /**
