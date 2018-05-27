@@ -45,7 +45,7 @@ contract( 'MakerSignedOracle', function ([owner, user, attacker]) {
     expect(parseInt(await signedOracle.data())).to.eql(0); //default value
 
   })
-  it.only('Update. Expect ok', async () => {
+  it('Update. Expect ok', async () => {
     const result = await signedOracle.update(DATA, TIMESTAMP, signature);
     const oracleData = await signedOracle.data();
     expect(parseInt(await signedOracle.data())).to.eql(120); //default value

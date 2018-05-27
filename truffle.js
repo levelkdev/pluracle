@@ -11,7 +11,8 @@ module.exports = {
       network_id: 42,
       gas: 4700000
     },
-    kovan_infura: getInfuraConfig('kovan', 42)
+    kovan_infura: getInfuraConfig('kovan', 42),
+    ropsten_infura: getInfuraConfig('ropsten', 3)
   }
 };
 

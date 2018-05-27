@@ -50,7 +50,7 @@ contract SignedOracle is Ownable {
 
     // Update the oracle data
     _data = data;
-    _lastTimestamp = now;
+    _lastTimestamp = dataTimestamp;
 
     emit Updated(_data);
 
