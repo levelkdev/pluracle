@@ -46,19 +46,25 @@ How a signed oracle works
 ## DataFeedOracle Interface
 
 ```
-function getDataType() public view returns (string);
-function getLastTimestamp() public view returns (uint256);
-function getData() public view returns (bytes);
+event Updated(uint256 newData);
+function dataType() public view returns (string);
+function lastTimestamp() public view returns (uint256);
+function data() public view returns (uint256);
 ```
 
 ## SignedOracle Interface
 
 ```
-function update(bytes value, uint256 startTimestamp, uint256 endTimestamp, bytes _signature) public;
-function edit(uint256 _reward, uint256 _timeDelay) onlyOwner;
-function getOwner() public view returns (address);
+function update(uint256 data, uint256 dataTimestamp, bytes signature) public;
+function edit(uint256 reward, uint256 timeDelayAllowed) public;
+function transferOwnership(address newOwner) public;
+function owner() public view returns (address);
 function reward() public view returns (uint256);
 function timeDelayAllowed() public view returns (uint256);
+```
+## HistoryDataFeedOracle interface
+```
+function dataAtTimestamp(uint dataTimestamp) public view returns (uint256);
 ```
 
 ## Whats next ?
