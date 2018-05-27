@@ -29,10 +29,9 @@ module.exports = async (callback) => {
         const makerSignedOracle = MakerSignedOracle.at("0x7d40f60890bc2f66a5e05bc998fe07ffbcbde3e0")
         const now = moment().subtract(1, "minutes").unix()
         const price = res.body.USD
-        let data = otherWeb3.utils.numberToHex(web3.toWei(price))
-        data = otherWeb3.utils.padLeft(data, 64)
+        let data = web3.toWei(price)
         console.log("Updating price: " + price + ", data: " + data)
-        const message = otherWeb3.utils.soliditySha3({type: 'bytes32', value: data}, {type: 'uint256', value: now});
+        const message = otherWeb3.utils.soliditySha3({type: 'uint256', value: data}, {type: 'uint256', value: now});
         const signedMessage = otherWeb3.eth.accounts.sign(message, "0x46a059700a7077b8c530809c85168b16d1774678d94ceedf9872365e85ca5de1")//0x0//web3.eth.sign(message, accounts[0]).then(console.log);
         makerSignedOracle.update(data, now, signedMessage.signature).then((tx) => {
           console.log("tx: " + tx.tx)

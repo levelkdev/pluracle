@@ -4,11 +4,11 @@ import './SignedOracle.sol';
 
 contract MakerSignedOracle is SignedOracle {
 
-  function peek() external view returns (bytes32,bool) {
+  function peek() external view returns (uint256, bool) {
     return (data(), now.sub(lastTimestamp()) <= _timeDelayAllowed);
   }
 
-  function read() external view returns (bytes32) {
+  function read() external view returns (uint256) {
     return data();
   }
 
