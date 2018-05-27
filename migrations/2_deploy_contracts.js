@@ -7,8 +7,8 @@ const dataType = "uint256"
 
 
 module.exports = function (deployer) {
-  let configurableCoin, tokenVestingFactory
-  deployer.then(() => {
-    return SignedOracleFactory.new(reward, timeDelayAllowed, dataType)
-  })
+  // let configurableCoin, tokenVestingFactory
+  // deployer.then(() => {
+  //   return SignedOracleFactory.new(reward, timeDelayAllowed, dataType)
+  // })
 };
